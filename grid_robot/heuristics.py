@@ -9,4 +9,7 @@ def base_heuristic(_grid_robot_state):
 
 #improved heuristic: manhattan-Distance-1 + picking up weight + one step with weight + putting down weight
 def advanced_heuristic(_grid_robot_state):
+    if _grid_robot_state.get_lamp_remaining() == 0:
+        return base_heuristic(_grid_robot_state)
+    #manhattan-Distance-1 + picking up weight + one step with weight + putting down weight
     return base_heuristic(_grid_robot_state)-1 + 1 + (1+_grid_robot_state.get_lamp_remaining())+1
