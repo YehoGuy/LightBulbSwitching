@@ -1,38 +1,62 @@
 from search_node import search_node
 from grid_robot_state import grid_robot_state
+from queue import PriorityQueue
 
 def create_open_set():
-    pass
+    return list()
 
 
 def create_closed_set():
-    pass
+    return list()
 
 
 def add_to_open(vn, open_set):
-    pass
+    open_set.append(vn)
+    
 
 
 def open_not_empty(open_set):
-    pass
+    return len(open_set) > 0
+    
 
 
 def get_best(open_set):
-    pass
+    min_node = open_set[0]
+    for node in open_set:
+        if node.f < min_node.f:
+            min_node = node
+    open_set.remove(min_node)
+    return min_node
+    
 
 
 def add_to_closed(vn, closed_set):
-    pass
+    closed_set.append(vn)
 
 #returns False if curr_neighbor state not in open_set or has a lower g from the node in open_set
 #remove the node with the higher g from open_set (if exists)
 def duplicate_in_open(vn, open_set):
-    pass
+    for node in open_set:
+        if node == vn:
+            if node.g > vn.g:
+                open_set.remove(node)
+                return False
+            return True
+    return False
+    
+
+    
 
 #returns False if curr_neighbor state not in closed_set or has a lower g from the node in closed_set
 #remove the node with the higher g from closed_set (if exists)
 def duplicate_in_closed(vn, closed_set):
-    pass
+    for node in closed_set:
+        if node == vn:
+            if node.g > vn.g:
+                closed_set.remove(node)
+                return False
+            return True
+    return False
 
 
 # helps to debug sometimes..
@@ -52,7 +76,8 @@ def search(start_state, heuristic):
     while open_not_empty(open_set):
 
         current = get_best(open_set)
-
+        #TODO: remove
+        print(f"current: {current.state.get_state_str()}")
         if grid_robot_state.is_goal_state(current.state):
             path = []
             while current:

@@ -13,4 +13,12 @@ class search_node():
 
     def get_neighbors(self):
         return self.state.get_neighbors()
-
+    
+    ##-----------------##
+    # nodes are compared based on their state, since the rest is payload.
+    
+    def __eq__(self, other):
+        return self.state == other.state
+    
+    def __hash__(self):
+        return hash(self.state)
