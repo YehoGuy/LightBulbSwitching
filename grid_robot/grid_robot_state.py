@@ -10,6 +10,7 @@ class grid_robot_state:
         self.lamp_height = lamp_height
         self.lamp_location = lamp_location
         self.carried_stairs = carried_stairs
+        
 
     @staticmethod
     def is_goal_state(_grid_robot_state):
@@ -18,15 +19,15 @@ class grid_robot_state:
 
     # returns the remaining height needed to reach the lamp
     def get_lamp_remaining(self):
-        return self.lamp_height - self.map[self.lamp_location[1]][self.lamp_location[0]]
+        return self.lamp_height - self.map[self.lamp_location[0]][self.lamp_location[1]]
     
     def get_neighbors(self):
         list_of_neighbours = []
         # pick stairs
-        if self.map[self.robot_location[1]][self.robot_location[0]] > 0 and self.carried_stairs == 0:
-            stairs_picked = self.map[self.robot_location[1]][self.robot_location[0]]
+        if self.map[self.robot_location[0]][self.robot_location[1]] > 0 and self.carried_stairs == 0:
+            stairs_picked = self.map[self.robot_location[0]][self.robot_location[1]]
             new_map = copy.deepcopy(self.map)
-            new_map[self.robot_location[1]][self.robot_location[0]] = 0
+            new_map[self.robot_location[0]][self.robot_location[1]] = 0
             list_of_neighbours.append(
                 (grid_robot_state(map=new_map, 
                                   robot_location=self.robot_location, 
@@ -37,9 +38,9 @@ class grid_robot_state:
                                     1)
                 )
         # place stairs
-        if self.carried_stairs > 0 and self.map[self.robot_location[1]][self.robot_location[0]] == 0:
+        if self.carried_stairs > 0 and self.map[self.robot_location[0]][self.robot_location[1]] == 0:
             new_map = copy.deepcopy(self.map)
-            new_map[self.robot_location[1]][self.robot_location[0]] = self.carried_stairs
+            new_map[self.robot_location[0]][self.robot_location[1]] = self.carried_stairs
             list_of_neighbours.append(
                 (grid_robot_state(map=new_map, 
                                   robot_location=self.robot_location, 
@@ -52,20 +53,20 @@ class grid_robot_state:
         # combine stairs
         # TODO go over extra check
         # also checks that the robot wont pick up more stairs then needed
-        if self.carried_stairs > 0 and self.map[self.robot_location[1]][self.robot_location[0]] > 0 and self.map[self.robot_location[1]][self.robot_location[0]]+self.carried_stairs<=self.lamp_height:
+        if self.carried_stairs > 0 and self.map[self.robot_location[0]][self.robot_location[1]] > 0 and self.map[self.robot_location[0]][self.robot_location[1]]+self.carried_stairs<=self.lamp_height:
             new_map = copy.deepcopy(self.map)
-            new_map[self.robot_location[1]][self.robot_location[0]] = 0
+            new_map[self.robot_location[0]][self.robot_location[1]] = 0
             list_of_neighbours.append(
                 (grid_robot_state(map=new_map, 
                                   robot_location=self.robot_location, 
                                   lamp_height=self.lamp_height, 
                                   lamp_location=self.lamp_location, 
-                                  carried_stairs=self.carried_stairs+self.map[self.robot_location[1]][self.robot_location[0]]),
+                                  carried_stairs=self.carried_stairs+self.map[self.robot_location[0]][self.robot_location[1]]),
                                    
                                     1)
                 )
         # move right
-        if self.robot_location[0] < len(self.map[self.robot_location[1]]) - 1 and self.map[self.robot_location[1]][self.robot_location[0]+1] != -1:
+        if self.robot_location[0] < len(self.map) - 1 and self.map[self.robot_location[0]+1][self.robot_location[1]] != -1:
             list_of_neighbours.append(
                 (grid_robot_state(map=self.map, 
                                   robot_location=(self.robot_location[0]+1, self.robot_location[1]), 
@@ -76,7 +77,7 @@ class grid_robot_state:
                                     1+self.carried_stairs)
                 )
         # move left
-        if self.robot_location[0] > 0 and self.map[self.robot_location[1]][self.robot_location[0]-1] != -1:
+        if self.robot_location[0] > 0 and self.map[self.robot_location[0]-1][self.robot_location[1]] != -1:
             list_of_neighbours.append(
                 (grid_robot_state(map=self.map, 
                                   robot_location=(self.robot_location[0]-1, self.robot_location[1]), 
@@ -87,7 +88,7 @@ class grid_robot_state:
                                     1+self.carried_stairs)
                 )
         # move up
-        if self.robot_location[1] > 0 and self.map[self.robot_location[1]-1][self.robot_location[0]] != -1:
+        if self.robot_location[1] > 0 and self.map[self.robot_location[0]][self.robot_location[1]-1] != -1:
             list_of_neighbours.append(
                 (grid_robot_state(map=self.map, 
                                   robot_location=(self.robot_location[0], self.robot_location[1]-1), 
@@ -98,7 +99,7 @@ class grid_robot_state:
                                     1+self.carried_stairs)
                 )
         # move down
-        if self.robot_location[1] < len(self.map) - 1 and self.map[self.robot_location[1]+1][self.robot_location[0]] != -1:
+        if self.robot_location[1] < len(self.map[self.robot_location[0]]) - 1 and self.map[self.robot_location[0]][self.robot_location[1]+1] != -1:
             list_of_neighbours.append(
                 (grid_robot_state(map=self.map, 
                                   robot_location=(self.robot_location[0], self.robot_location[1]+1), 
