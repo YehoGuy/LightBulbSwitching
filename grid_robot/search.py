@@ -56,7 +56,7 @@ def duplicate_in_closed(vn, closed_set):
         existing_node = closed_set[vn.state]
         if existing_node.g <= vn.g:
             return True
-        del closed_set[0][vn.state]
+        del closed_set[vn.state]
         return False
     return False
     
